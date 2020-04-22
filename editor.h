@@ -3,6 +3,7 @@
 #include <QTextEdit>
 #include <QKeyEvent>
 #include <QDebug>
+#include <QVector>
 
 class Editor : public QTextEdit
 {
@@ -15,6 +16,8 @@ private:
     void keyPressEvent(QKeyEvent *event);
     QString nextChar();
     QString previousChar();
+    unsigned int mistakes;
+    QVector<bool> mistakesLog;
 };
 
 #endif // EDITOR_H

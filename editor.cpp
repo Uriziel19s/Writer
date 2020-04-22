@@ -3,6 +3,9 @@
 
 Editor::Editor(QWidget *parent) : QTextEdit(parent)
 {
+    mistakes = 0;
+    setTextInteractionFlags(Qt::TextInteractionFlag::NoTextInteraction | Qt::TextInteractionFlag::TextSelectableByKeyboard);
+    this->setContextMenuPolicy(Qt::ContextMenuPolicy::NoContextMenu);
 };
 
 Editor::~Editor()
@@ -47,6 +50,8 @@ QString Editor::previousChar()
     return previousChar;
 }
 
+
+
 void Editor::keyPressEvent(QKeyEvent *event)
 {
     QTextCursor cursor = this->textCursor();
@@ -84,17 +89,21 @@ void Editor::keyPressEvent(QKeyEvent *event)
         if(event->text() == nextChar)
         {
             insertHtml("<span style=\"color:blue\">" + nextChar + "</span>");
+            mistakesLog.append(0);
         }
         else
         {
             insertHtml("<span style=\"color:red\">" + nextChar + "</span>");
+            mistakes++;
+            mistakesLog.append(1);
         }
         break;
     }
     }
-    //qDebug() << this->toHtml();
     this->setTextCursor(cursor);
     this->update();
 }
+
+
 
 
