@@ -8,6 +8,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QDataStream>
+#include "editor.h"
 
 namespace Ui {
 class MainWindow;

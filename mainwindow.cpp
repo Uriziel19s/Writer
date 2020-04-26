@@ -7,10 +7,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     openFile();
+    ui->centralwidget->setText(this->textToDisplay);
 }
 
 MainWindow::~MainWindow()
 {
+    delete  ui->centralwidget;
     delete ui;
 }
 
@@ -28,7 +30,9 @@ void MainWindow::openFile()
     input.setVersion(QDataStream::Qt_4_5);
     textToDisplay.clear();
     if(file.size() <= 1000000)//hardcoded, must be changed in the future
-    textToDisplay += file.readAll();
+    {
+        textToDisplay += file.readAll();
+    }
     qDebug() << textToDisplay;
     file.close();
 }

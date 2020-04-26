@@ -12,11 +12,13 @@ public:
     ~Editor();
     void setText(QString text);
 private:
+    QString textToDisplay;
+    unsigned int cursorPosition = 0;
     QTextCursor *cursor;
     void keyPressEvent(QKeyEvent *event);
     QString nextChar();
     QString previousChar();
-    unsigned int mistakes;
+    unsigned int mistakes = 0;
     QVector<bool> mistakesLog;
 };
 

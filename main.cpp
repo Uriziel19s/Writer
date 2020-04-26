@@ -22,6 +22,7 @@ int main(int argc, char **argv)
 //    editor->setPalette(palette);
     //editor->show();
     window.show();
-            qDebug() << "asdfasf";
-    return app.exec();
+   app.exec();
+            qDebug() << "as11111111111111f";
+            return 0;
 }
