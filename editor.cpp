@@ -13,6 +13,7 @@ Editor::~Editor()
 }
 void Editor::setText(QString textToDisplay)
 {
+    sizeOfText = textToDisplay.size();
     this->textToDisplay = textToDisplay;
     this->clear();
     textToDisplay.replace("\n","<br>");
@@ -146,6 +147,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
         break;
     }
     }
+    emit progressChanged(float(cursorPosition)/float(sizeOfText)*100);
     this->setTextCursor(cursor);
     this->update();
 }

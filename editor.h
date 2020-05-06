@@ -7,6 +7,7 @@
 
 class Editor : public QTextEdit
 {
+    Q_OBJECT
 public:
     Editor(QWidget *parent = 0);
     ~Editor();
@@ -20,6 +21,10 @@ private:
     QString previousChar();
     unsigned int mistakes = 0;
     QVector<bool> mistakesLog;
+    unsigned int sizeOfText;
+
+signals:
+    int progressChanged(int value);
 };
 
 #endif // EDITOR_H

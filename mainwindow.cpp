@@ -8,6 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     openFile();
     ui->centralwidget->setText(this->textToDisplay);
+    ui->statusbar->addPermanentWidget(ui->progressBar);
+    connect(ui->centralwidget, &Editor::progressChanged, ui->progressBar, &QProgressBar::setValue );
 }
 
 MainWindow::~MainWindow()

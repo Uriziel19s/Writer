@@ -8,6 +8,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QDataStream>
+#include <QTimer>
 #include "editor.h"
 
 namespace Ui {
@@ -26,8 +27,6 @@ public:
 private:
     Ui::MainWindow *ui;
     QString textToDisplay;
-
-
 };
 
 #endif // MAINWINDOW_H
