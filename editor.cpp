@@ -5,6 +5,7 @@ Editor::Editor(QWidget *parent) : QTextEdit(parent)
 {
     setTextInteractionFlags(Qt::TextInteractionFlag::NoTextInteraction | Qt::TextInteractionFlag::TextSelectableByKeyboard);
     this->setContextMenuPolicy(Qt::ContextMenuPolicy::NoContextMenu);
+
 };
 
 Editor::~Editor()
@@ -16,11 +17,14 @@ void Editor::setText(QString textToDisplay)
     sizeOfText = textToDisplay.size();
     this->textToDisplay = textToDisplay;
     this->clear();
+    textToDisplay.replace(" ", "&nbsp;");
+    textToDisplay.replace("<", "&lt;");
+    textToDisplay.replace(">", "&gt;");
     textToDisplay.replace("\n","<br>");
+    qDebug() << textToDisplay;
     QTextCursor cursor = this->textCursor();
 
         insertHtml("<span style=\"color:black\">" + textToDisplay + "</span>");
-
     cursor.setPosition(QTextCursor::Start);
     cursor.movePosition(QTextCursor::MoveOperation::PreviousCharacter);
     this->setTextCursor(cursor);
@@ -34,7 +38,6 @@ QString Editor::nextChar()
     cursor.insertText(" ");
     int lastCursorPosition = cursor.position();
     cursor.select(QTextCursor::SelectionType::WordUnderCursor);
-    qDebug() << lastCursorPosition << " " << cursor.position();
     QString nextChar = cursor.selectedText().left(1);
     cursor.clearSelection();
     cursor.setPosition(lastCursorPosition);
@@ -51,32 +54,42 @@ QString Editor::previousChar()
     cursor.movePosition(QTextCursor::MoveOperation::NextCharacter);
     return previousChar;
 }
+template<class T>
+void Editor::insertTextInColor(T textToinsert, QString color)
+{
+    QString stringToinsert = QString(textToinsert);
+    stringToinsert.replace("<", "&lt;");
+    stringToinsert.replace(">", "&gt;");
+    stringToinsert.replace(" ", "&nbsp;");
+    stringToinsert.replace("\n", "<br>");
+    insertHtml("<span style=\"color:"+ color + "\">" + stringToinsert + "</span>");
+}
 
 
 
 void Editor::keyPressEvent(QKeyEvent *event)
 {
     QTextCursor cursor = this->textCursor();
+    qDebug() << cursorPosition << " " << cursor.position() << " " << textToDisplay[cursorPosition] << " " << toPlainText()[cursor.position()];
     switch(event->key())
     {
     case Qt::Key_Backspace:
     {
-        qDebug() << cursorPosition << " " << cursor.position();
         if(!cursor.atStart())
         {
             cursorPosition--;
             cursor.deletePreviousChar();
             if(textToDisplay[cursorPosition] == " ")
             {
-                insertHtml("<span style=\"color:blue\">&nbsp;</span>");
+                insertTextInColor(" ", "black");
             }
             else if(textToDisplay[cursorPosition] == "\n")
             {
-                insertHtml("<br>");
+                insertTextInColor("\n", "");
             }
             else
             {
-                cursor.insertHtml("<span style=\"color:black\">" + textToDisplay[cursorPosition] + "</span>");
+                insertTextInColor(QString(textToDisplay[cursorPosition]), "black");
             }
             cursor.movePosition(QTextCursor::MoveOperation::PreviousCharacter);
         }
@@ -116,30 +129,30 @@ void Editor::keyPressEvent(QKeyEvent *event)
         cursor.deleteChar();
         if(event->text() == textToDisplay[cursorPosition] && textToDisplay[cursorPosition] == " ")
         {
-            insertHtml("<span style=\"color:blue\">&nbsp;</span>");
+            insertTextInColor(" ", "blue");
             mistakesLog.append(false);
         }
         else if(event->text() != textToDisplay[cursorPosition] && textToDisplay[cursorPosition] == " ")
         {
-            insertHtml("<span style=\"color:red\">&nbsp;</span>");
+            insertTextInColor(" ", "red");
             mistakesLog.append(true);
         }
         else if(event->text() == textToDisplay[cursorPosition])
         {
-            insertHtml("<span style=\"color:blue\">" + textToDisplay[cursorPosition] + "</span>");
+            insertTextInColor(textToDisplay[cursorPosition], "blue");
             mistakesLog.append(false);
         }
         else if(textToDisplay[cursorPosition] == "\n" && event->key() == Qt::Key_Enter)
         {
-            insertHtml("<br>");
+            insertTextInColor("\n", "blue");
         }
         else if(textToDisplay[cursorPosition] == "\n" && event->key() != Qt::Key_Enter)
         {
-            insertHtml("<br>");//ENTER BUT IN RED
+            insertTextInColor("\n", "red");//ENTER BUT IN RED
         }
         else
         {
-            insertHtml("<span style=\"color:red\">" + textToDisplay[cursorPosition] + "</span>");
+            insertTextInColor(textToDisplay[cursorPosition], "red");
             mistakes++;
             mistakesLog.append(true);
         }
@@ -148,6 +161,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
     }
     }
     emit progressChanged(float(cursorPosition)/float(sizeOfText)*100);
+    emit mistakesChanged(mistakes);
     this->setTextCursor(cursor);
     this->update();
 }

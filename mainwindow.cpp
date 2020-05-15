@@ -9,7 +9,11 @@ MainWindow::MainWindow(QWidget *parent) :
     openFile();
     ui->centralwidget->setText(this->textToDisplay);
     ui->statusbar->addPermanentWidget(ui->progressBar);
-    connect(ui->centralwidget, &Editor::progressChanged, ui->progressBar, &QProgressBar::setValue );
+    ui->statusbar->addPermanentWidget(ui->lcdMistakesCounter);
+    ui->lcdMistakesCounter->setMode(QLCDNumber::Dec);
+    ui->progressBar->setValue(0);
+    connect(ui->centralwidget, &Editor::mistakesChanged, ui->lcdMistakesCounter, static_cast<void (QLCDNumber::*)(int)>(&QLCDNumber::display));
+    connect(ui->centralwidget, &Editor::progressChanged, ui->progressBar, &QProgressBar::setValue);
 }
 
 MainWindow::~MainWindow()

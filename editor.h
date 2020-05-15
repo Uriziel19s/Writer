@@ -22,9 +22,11 @@ private:
     unsigned int mistakes = 0;
     QVector<bool> mistakesLog;
     unsigned int sizeOfText;
+    template<class T> void insertTextInColor(T textToinsert, QString color);//T class must be casteble to QString
 
 signals:
     int progressChanged(int value);
+    void mistakesChanged(int value);
 };
 
 #endif // EDITOR_H
