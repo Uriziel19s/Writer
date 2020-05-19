@@ -4,6 +4,7 @@
 #include <QKeyEvent>
 #include <QDebug>
 #include <QVector>
+#include <QElapsedTimer>
 
 class Editor : public QTextEdit
 {
@@ -23,10 +24,12 @@ private:
     QVector<bool> mistakesLog;
     unsigned int sizeOfText;
     template<class T> void insertTextInColor(T textToinsert, QString color);//T class must be casteble to QString
+    QElapsedTimer timer;
 
 signals:
     int progressChanged(int value);
     void mistakesChanged(int value);
+    void testEnded(float time, float percentageMistakes, float percentageAbsoluteMistakes, float correctness);
 };
 
 #endif // EDITOR_H

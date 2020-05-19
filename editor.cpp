@@ -69,6 +69,10 @@ void Editor::insertTextInColor(T textToinsert, QString color)
 
 void Editor::keyPressEvent(QKeyEvent *event)
 {
+    if(!timer.isValid())
+    {
+        timer.start();
+    }
     QTextCursor cursor = this->textCursor();
     qDebug() << cursorPosition << " " << cursor.position() << " " << textToDisplay[cursorPosition] << " " << toPlainText()[cursor.position()];
     switch(event->key())
@@ -92,6 +96,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
                 insertTextInColor(QString(textToDisplay[cursorPosition]), "black");
             }
             cursor.movePosition(QTextCursor::MoveOperation::PreviousCharacter);
+            mistakesLog.removeLast();
         }
         break;
     }
@@ -135,6 +140,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
         else if(event->text() != textToDisplay[cursorPosition] && textToDisplay[cursorPosition] == " ")
         {
             insertTextInColor(" ", "red");
+            mistakes++;
             mistakesLog.append(true);
         }
         else if(event->text() == textToDisplay[cursorPosition])
@@ -145,10 +151,13 @@ void Editor::keyPressEvent(QKeyEvent *event)
         else if(textToDisplay[cursorPosition] == "\n" && event->key() == Qt::Key_Enter)
         {
             insertTextInColor("\n", "blue");
+            mistakesLog.append(false);
         }
         else if(textToDisplay[cursorPosition] == "\n" && event->key() != Qt::Key_Enter)
         {
             insertTextInColor("\n", "red");//ENTER BUT IN RED
+            mistakes++;
+            mistakesLog.append(true);
         }
         else
         {
@@ -160,7 +169,19 @@ void Editor::keyPressEvent(QKeyEvent *event)
         break;
     }
     }
-    emit progressChanged(float(cursorPosition)/float(sizeOfText)*100);
+    if(cursorPosition == sizeOfText - 1)
+    {
+        int relativeMistakes = 0;
+        for(bool i : mistakesLog)
+        {
+            if(i == true)
+            {
+                relativeMistakes++;
+            }
+        }
+        emit testEnded(timer.elapsed(), float(mistakes)/sizeOfText*100, float(relativeMistakes)/sizeOfText*100, float(sizeOfText-relativeMistakes)/sizeOfText*100);
+    }
+    emit progressChanged(float(cursorPosition + 1)/float(sizeOfText)*100);
     emit mistakesChanged(mistakes);
     this->setTextCursor(cursor);
     this->update();
