@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="Editor" name="centralwidget">
+  <widget class="QWidget" name="centralwidget">
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
@@ -83,14 +83,6 @@
    </attribute>
   </widget>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>Editor</class>
-   <extends>QWidget</extends>
-   <header>editor.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

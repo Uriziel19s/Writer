@@ -9,8 +9,10 @@
 #include <QMessageBox>
 #include <QDataStream>
 #include <QTimer>
-#include "editor.h"
 #include <QTextBrowser>
+#include <QStackedWidget>
+#include "editor.h"
+#include "scoredisplayer.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,14 +28,17 @@ public:
     void openFile();
 public slots:
     void showScore(float time, float percentageMistakes, float percentageAbsoluteMistakes, float correctness);
+    void startTest();
 private:
     QVector<QString> checkEalierScore(QString name);
     void saveScoreIfBetter(QString name, float time, float percentageMistakes, float percentageAbsoluteMistakes, float correctness);
     Ui::MainWindow *ui;
     QString textToDisplay;
-    QTextBrowser scoreDisplayer;
-    Editor testDisplayer;
+    ScoreDisplayer *scoreDisplayer;
+    Editor *testDisplayer;
     QString fileName;
+    void displayBestScore(QString name);
+    QStackedWidget *stackedWidget;
 
 };
 

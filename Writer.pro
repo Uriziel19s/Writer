@@ -27,11 +27,13 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
     editor.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    scoredisplayer.cpp
 
 HEADERS += \
     editor.h \
-    mainwindow.h
+    mainwindow.h \
+    scoredisplayer.h
 
 FORMS += \
     mainwindow.ui

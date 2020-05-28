@@ -13,6 +13,7 @@ public:
     Editor(QWidget *parent = 0);
     ~Editor();
     void setText(QString text);
+    void reset();
 private:
     QString textToDisplay;
     unsigned int cursorPosition = 0;
@@ -30,6 +31,7 @@ signals:
     int progressChanged(int value);
     void mistakesChanged(int value);
     void testEnded(float time, float percentageMistakes, float percentageAbsoluteMistakes, float correctness);
+    void resetTest();
 };
 
 #endif // EDITOR_H

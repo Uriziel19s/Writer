@@ -21,15 +21,23 @@ void Editor::setText(QString textToDisplay)
     textToDisplay.replace("<", "&lt;");
     textToDisplay.replace(">", "&gt;");
     textToDisplay.replace("\n","<br>");
-    qDebug() << textToDisplay;
     QTextCursor cursor = this->textCursor();
-
-        insertHtml("<span style=\"color:black\">" + textToDisplay + "</span>");
-    cursor.setPosition(QTextCursor::Start);
-    cursor.movePosition(QTextCursor::MoveOperation::PreviousCharacter);
+    insertHtml("<span style=\"color:black\">" + textToDisplay + "</span>");
+    cursor.setPosition(0);
     this->setTextCursor(cursor);
     this->update();
-    qDebug() << this->toHtml();
+}
+
+void Editor::reset()
+{
+    textToDisplay.clear();
+    cursorPosition = 0;
+    mistakes = 0;
+    mistakesLog.clear();
+    sizeOfText = 0;
+    timer.invalidate();
+    clear();
+    update();
 }
 
 QString Editor::nextChar()
@@ -66,15 +74,14 @@ void Editor::insertTextInColor(T textToinsert, QString color)
 }
 
 
-
 void Editor::keyPressEvent(QKeyEvent *event)
 {
+    qDebug() << toHtml() << "\n";
     if(!timer.isValid())
     {
         timer.start();
     }
-    QTextCursor cursor = this->textCursor();
-    qDebug() << cursorPosition << " " << cursor.position() << " " << textToDisplay[cursorPosition] << " " << toPlainText()[cursor.position()];
+    QTextCursor cursor = this->textCursor();//synchronization between edit cursor and my cursor
     switch(event->key())
     {
     case Qt::Key_Backspace:
@@ -102,15 +109,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
     }
     case Qt::Key_Escape:
     {
-        QPixmap pixmap;
-        qDebug() << pixmap.size();
-        pixmap = this->grab(QRect(QPoint(-1,-1), QSize(this->width()-50, this->height()-50)));
-        qDebug() << pixmap.size();
-        QPalette pallete = this->palette();
-        pallete.setBrush(QPalette::Base,QBrush(pixmap));
-        this->setPalette(pallete);
-        qDebug() << "asdfasf ";
-        this->update();
+        emit resetTest();
         break;
     }
     case Qt::Key_Shift:
