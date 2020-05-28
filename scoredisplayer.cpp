@@ -12,9 +12,13 @@ void ScoreDisplayer::keyPressEvent(QKeyEvent *event)
     {
     case Qt::Key_Escape:
     {
-        emit resetTest();
-    break;
+        QApplication::exit();
+        break;
     }
-
+    case Qt::Key_R:
+    {
+        emit resetTest();
+        break;
+    }
     }
 }

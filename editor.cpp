@@ -110,7 +110,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Escape:
     {
         emit resetTest();
-        break;
+        return;
     }
     case Qt::Key_Shift:
     {
@@ -179,6 +179,7 @@ void Editor::keyPressEvent(QKeyEvent *event)
             }
         }
         emit testEnded(timer.elapsed(), float(mistakes)/sizeOfText*100, float(relativeMistakes)/sizeOfText*100, float(sizeOfText-relativeMistakes)/sizeOfText*100);
+        return;
     }
     emit progressChanged(float(cursorPosition + 1)/float(sizeOfText)*100);
     emit mistakesChanged(mistakes);

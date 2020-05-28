@@ -3,6 +3,7 @@
 #include <QTextBrowser>
 #include <QObject>
 #include <QKeyEvent>
+#include <QApplication>
 
 class ScoreDisplayer : public QTextBrowser
 {

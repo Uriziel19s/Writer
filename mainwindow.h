@@ -39,6 +39,8 @@ private:
     QString fileName;
     void displayBestScore(QString name);
     QStackedWidget *stackedWidget;
+    void displayInformation(QString htmlText);
+    void showStartMenu();
 
 };
 
