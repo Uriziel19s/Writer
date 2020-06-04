@@ -12,15 +12,21 @@ MainWindow::MainWindow(QWidget *parent) :
     stackedWidget->addWidget(scoreDisplayer);
     ui->setupUi(this);
     setCentralWidget(stackedWidget);
+    ui->statusbar->addWidget(ui->fingerDisplayer);
     ui->statusbar->addPermanentWidget(ui->progressBar);
     ui->statusbar->addPermanentWidget(ui->lcdMistakesCounter);
     ui->lcdMistakesCounter->setMode(QLCDNumber::Dec);
     ui->progressBar->setValue(0);
+    ui->fingerDisplayer->setText("");
+    ui->fingerDisplayer->setMaximumSize(250,20);
+    ui->fingerDisplayer->setMinimumSize(250,20);
     connect(testDisplayer, &Editor::mistakesChanged, ui->lcdMistakesCounter, static_cast<void (QLCDNumber::*)(int)>(&QLCDNumber::display));
     connect(testDisplayer, &Editor::progressChanged, ui->progressBar, &QProgressBar::setValue);
     connect(testDisplayer, &Editor::testEnded, this, &MainWindow::showScore);
     connect(testDisplayer, &Editor::resetTest, this, &MainWindow::startTest);
     connect(scoreDisplayer, &ScoreDisplayer::resetTest, this, &MainWindow::startTest);
+    connect(scoreDisplayer, &ScoreDisplayer::showScoreTable, this, &MainWindow::showScoreTable);
+    connect(testDisplayer, &Editor::fingerChanged, ui->fingerDisplayer,&QLabel::setText);
     showStartMenu();
 }
 
@@ -44,9 +50,14 @@ void MainWindow::openFile()
         return;
     }
     textToDisplay.clear();
-    if(file.size() <= 1000000)//hardcoded, must be changed in the future
+    if(file.size() <= 1000000 and file.size() >= 10)//hardcoded, must be changed in the future
     {
         textToDisplay += file.readAll();
+    }
+    else
+    {
+        QMessageBox::information(this, "Wrong size of the file", "Return to menu.");
+        showStartMenu();
     }
     file.close();
 }
@@ -55,11 +66,11 @@ void MainWindow::showScore(float time, float percentageMistakes, float percentag
 {
     scoreDisplayer->clear();
     displayInformation("<p style=\"text-align: center\">Time: " + QString::number(time/1000) + "s<br>Mistakes: " + QString::number(percentageMistakes)
-                           + "%<br>Absolute mistakes: "+ QString::number(percentageAbsoluteMistakes)
-                           + "%<br>The correctness: " + QString::number(correctness) + "%</p>");
+                       + "%<br>Absolute mistakes: "+ QString::number(percentageAbsoluteMistakes)
+                       + "%<br>The correctness: " + QString::number(correctness) + "%</p>");
     saveScoreIfBetter(fileName, time, percentageMistakes, percentageAbsoluteMistakes, correctness);
     displayBestScore(fileName);
-    displayInformation("<p style=\"text-align: center\">Press R to start new test or Esc to exit</br><p/>");
+    displayInformation("<p style=\"text-align:center\">Press R to Start, S to show scoreboard or Esc to quit</p>");
 }
 void MainWindow::displayInformation(QString htmlText)
 {
@@ -71,7 +82,34 @@ void MainWindow::showStartMenu()
 {
     stackedWidget->setCurrentIndex(1);
     scoreDisplayer->clear();
-    displayInformation("<p style=\"text-align:center\">Press R to Start or Esc to quit</p>");
+    displayInformation("<p style=\"text-align:center\">Press R to Start, S to show scoreboard or Esc to quit</p>");
+}
+
+void MainWindow::showScoreTable()
+{
+    stackedWidget->setCurrentIndex(1);
+    scoreDisplayer->clear();
+    QFile file("scores.txt");
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::information(this, "Unable to open score file.", "Return to menu.");
+        showStartMenu();
+        return;
+    }
+    QStringList scoresList = QString(file.readAll()).split("\n");
+    scoresList.removeFirst();
+    int numberOfScores = scoresList.size()/5;
+    for(int i = 0; i < numberOfScores * 5; i += 5)
+    {
+        displayInformation("<p style=\"font-weight: bold; text-align: center\">" +scoresList[i] + "</p>"
+                           + "<p style=\"text-align: center\">Time: " + QString::number(scoresList[i+ 1].toFloat()/1000)
+                + "s<br>Mistakes: " + scoresList[i + 2]
+                + "%<br>Absolute mistakes: "+ scoresList[i + 3]
+                + "%<br>The correctness: " + scoresList[i + 4] + "%</p>");
+    }
+    displayInformation("<p style=\"text-align:center\">Press R to Start, S to show scoreboard or Esc to quit</p>");
+    file.close();
+
 }
 
 void MainWindow::saveScoreIfBetter(QString name, float time, float percentageMistakes, float percentageAbsoluteMistakes, float correctness)
@@ -80,8 +118,9 @@ void MainWindow::saveScoreIfBetter(QString name, float time, float percentageMis
     QFile file("scores.txt");
     if(!file.open(QIODevice::ReadOnly | QIODevice::WriteOnly |QIODevice::Text))
     {
-        QMessageBox::information(this, "Unable to open file.", file.errorString());
-        //maybe add exception
+        QMessageBox::information(this, "Unable to open score file.", "Return to menu.");
+        showStartMenu();
+        return;
     }
     QStringList scoresList = QString(file.readAll()).split("\n");
     int position = scoresList.indexOf(name);
@@ -114,18 +153,19 @@ void MainWindow::displayBestScore(QString name)
     QFile file("scores.txt");
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QMessageBox::information(this, "Unable to open file.", file.errorString());
-        //maybe add exception
+        QMessageBox::information(this, "Unable to open score file.", "Return to menu.");
+        showStartMenu();
+        return;
     }
     QStringList scoresList = QString(file.readAll()).split("\n");
     int position = scoresList.indexOf(name);
     if(position != -1)
     {
         displayInformation("<p style=\"font-weight: bold; text-align: center\">Best score:</p>"
-                                  "<p style=\"text-align: center\">Time: " + QString::number(scoresList[position + 1].toFloat()/1000)
-                                  + "s<br>Mistakes: " + scoresList[position + 2]
-                                  + "%<br>Absolute mistakes: "+ scoresList[position + 3]
-                                  + "%<br>The correctness: " + scoresList[position + 4] + "%</p>");
+                           "<p style=\"text-align: center\">Time: " + QString::number(scoresList[position + 1].toFloat()/1000)
+                + "s<br>Mistakes: " + scoresList[position + 2]
+                + "%<br>Absolute mistakes: "+ scoresList[position + 3]
+                + "%<br>The correctness: " + scoresList[position + 4] + "%</p>");
     }
 }
 
@@ -135,5 +175,6 @@ void MainWindow::startTest()
     openFile();
     testDisplayer->reset();
     testDisplayer->setText(textToDisplay);
+    testDisplayer->updateFinger();
 }
 

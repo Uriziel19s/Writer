@@ -5,13 +5,17 @@ Editor::Editor(QWidget *parent) : QTextEdit(parent)
 {
     setTextInteractionFlags(Qt::TextInteractionFlag::NoTextInteraction | Qt::TextInteractionFlag::TextSelectableByKeyboard);
     this->setContextMenuPolicy(Qt::ContextMenuPolicy::NoContextMenu);
-
+    tableOfFingers << "1qa`" << "2wsx" << "3edx" << "456rtfgcvb" << "7uyjhmn" << "89ik" << "0ol." << "-p;/=[]'\n" << " ";
+    tableOfShiftFingers << "!QAZ~" << "@WSX" << "#EDC" << "$%^RTYFGVB" << "&YUJNM"<< "*IK<(" << ")OL>" << "_+P{}|:\"?" << "";
+    namesOfFingers << "left little finger" << "left ring finger" << "left middle finger" << "left index" <<
+                      "right index" << "right middle finger" << "right ring finger" << "right little finger" << "thumb";
 };
 
 Editor::~Editor()
 {
 
 }
+
 void Editor::setText(QString textToDisplay)
 {
     sizeOfText = textToDisplay.size();
@@ -22,7 +26,8 @@ void Editor::setText(QString textToDisplay)
     textToDisplay.replace(">", "&gt;");
     textToDisplay.replace("\n","<br>");
     QTextCursor cursor = this->textCursor();
-    insertHtml("<span style=\"color:black\">" + textToDisplay + "</span>");
+    insertHtml("<span style=\"color:black; text-align: center\">" + textToDisplay + "</span>");
+    setAlignment(Qt::AlignCenter);
     cursor.setPosition(0);
     this->setTextCursor(cursor);
     this->update();
@@ -40,28 +45,23 @@ void Editor::reset()
     update();
 }
 
-QString Editor::nextChar()
+void Editor::isTestEnded()
 {
-    QTextCursor cursor = this->textCursor();
-    cursor.insertText(" ");
-    int lastCursorPosition = cursor.position();
-    cursor.select(QTextCursor::SelectionType::WordUnderCursor);
-    QString nextChar = cursor.selectedText().left(1);
-    cursor.clearSelection();
-    cursor.setPosition(lastCursorPosition);
-    cursor.deletePreviousChar();
-    return nextChar;
+    if(cursorPosition == sizeOfText - 1)
+    {
+        int relativeMistakes = 0;
+        for(bool i : mistakesLog)
+        {
+            if(i == true)
+            {
+                relativeMistakes++;
+            }
+        }
+        emit testEnded(timer.elapsed(), float(mistakes)/sizeOfText*100, float(relativeMistakes)/sizeOfText*100, float(sizeOfText-relativeMistakes)/sizeOfText*100);
+        emit fingerChanged(" ");
+    }
 }
 
-QString Editor::previousChar()
-{
-    QTextCursor cursor = this->textCursor();
-    cursor.movePosition(QTextCursor::MoveOperation::PreviousCharacter);
-   this->setTextCursor(cursor);
-    QString previousChar = this->nextChar();
-    cursor.movePosition(QTextCursor::MoveOperation::NextCharacter);
-    return previousChar;
-}
 template<class T>
 void Editor::insertTextInColor(T textToinsert, QString color)
 {
@@ -71,12 +71,12 @@ void Editor::insertTextInColor(T textToinsert, QString color)
     stringToinsert.replace(" ", "&nbsp;");
     stringToinsert.replace("\n", "<br>");
     insertHtml("<span style=\"color:"+ color + "\">" + stringToinsert + "</span>");
+    setAlignment(Qt::AlignCenter);
 }
 
 
 void Editor::keyPressEvent(QKeyEvent *event)
 {
-    qDebug() << toHtml() << "\n";
     if(!timer.isValid())
     {
         timer.start();
@@ -168,24 +168,35 @@ void Editor::keyPressEvent(QKeyEvent *event)
         break;
     }
     }
-    if(cursorPosition == sizeOfText - 1)
-    {
-        int relativeMistakes = 0;
-        for(bool i : mistakesLog)
-        {
-            if(i == true)
-            {
-                relativeMistakes++;
-            }
-        }
-        emit testEnded(timer.elapsed(), float(mistakes)/sizeOfText*100, float(relativeMistakes)/sizeOfText*100, float(sizeOfText-relativeMistakes)/sizeOfText*100);
-        return;
-    }
     emit progressChanged(float(cursorPosition + 1)/float(sizeOfText)*100);
     emit mistakesChanged(mistakes);
+    updateFinger();
+    isTestEnded();
     this->setTextCursor(cursor);
     this->update();
 }
+
+void Editor::updateFinger()
+{
+    for(int i = 0; i < namesOfFingers.size(); i++)
+    {
+        if(cursorPosition < sizeOfText)
+        {
+            if(tableOfFingers[i].indexOf(textToDisplay[cursorPosition]) > -1)
+            {
+                emit fingerChanged(namesOfFingers[i]);
+                return;
+            }
+            else if(tableOfShiftFingers[i].indexOf(textToDisplay[cursorPosition]) > -1)
+            {
+                emit fingerChanged(namesOfFingers[i]);
+                return;
+            }
+        }
+    }
+}
+
+
 
 
 

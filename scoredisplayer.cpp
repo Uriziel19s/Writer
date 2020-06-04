@@ -20,5 +20,10 @@ void ScoreDisplayer::keyPressEvent(QKeyEvent *event)
         emit resetTest();
         break;
     }
+    case Qt::Key_S:
+    {
+        emit showScoreTable();
+        break;
+    }
     }
 }

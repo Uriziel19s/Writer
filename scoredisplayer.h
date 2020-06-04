@@ -14,6 +14,7 @@ private:
     void keyPressEvent(QKeyEvent *event);
 signals:
     void resetTest();
+    void showScoreTable();
 
 public slots:
 };
