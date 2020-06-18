@@ -35,3 +35,10 @@ Do zrobienia:
 
 
 Generalnie projekt jest skończony. Nie ma aktualnie żadnych widocznych błędów. Jeśli chodzi o estetykę to jest skromna, ale zaawansowana grafika nie była nigdy głównym celem tego projektu. Być może jeśli znajdę chwilę wolnego czasu to postaram się sprawić by wygląd aplikacji był mniej monotematyczny.
+
+----------------------------------------------------------------------------------------------------
+
+-ranking zrobiony
+-wyświetlanie wskazówek zrobione
+Wszystkie założenia udało się osiągnąć
+
