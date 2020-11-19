@@ -11,11 +11,7 @@ class Editor : public QTextEdit
     Q_OBJECT
 
 public:
-<<<<<<< HEAD
     Editor(QWidget *parent = nullptr);
-=======
-    Editor(QWidget *parent = 0);
->>>>>>> 2b2702bb354cd6160fd74fe4c3cc689edf5a7168
     ~Editor();
     void setText(QString text);
     void reset();
@@ -33,11 +29,7 @@ private:
     QStringList tableOfShiftFingers;
     QStringList namesOfFingers;
     unsigned int cursorPosition = 0;
-<<<<<<< HEAD
     int sizeOfText;
-=======
-    unsigned int sizeOfText;
->>>>>>> 2b2702bb354cd6160fd74fe4c3cc689edf5a7168
     unsigned int mistakes = 0;
 
 signals:
