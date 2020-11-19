@@ -37,6 +37,7 @@
      </rect>
     </property>
    </widget>
+<<<<<<< HEAD
    <widget class="QLabel" name="fingerDisplayer">
     <property name="geometry">
      <rect>
@@ -50,6 +51,8 @@
      <string>TextLabel</string>
     </property>
    </widget>
+=======
+>>>>>>> 2b2702bb354cd6160fd74fe4c3cc689edf5a7168
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

@@ -5,7 +5,11 @@ Editor::Editor(QWidget *parent) : QTextEdit(parent)
 {
     setTextInteractionFlags(Qt::TextInteractionFlag::NoTextInteraction | Qt::TextInteractionFlag::TextSelectableByKeyboard);
     this->setContextMenuPolicy(Qt::ContextMenuPolicy::NoContextMenu);
+<<<<<<< HEAD
     tableOfFingers << "1qa`" << "2wsx" << "3edx" << "456rtfgcvb" << "7uyjhmn" << "89ik," << "0ol." << "-p;/=[]'\n" << " ";
+=======
+    tableOfFingers << "1qa`" << "2wsx" << "3edx" << "456rtfgcvb" << "7uyjhmn" << "89ik" << "0ol." << "-p;/=[]'\n" << " ";
+>>>>>>> 2b2702bb354cd6160fd74fe4c3cc689edf5a7168
     tableOfShiftFingers << "!QAZ~" << "@WSX" << "#EDC" << "$%^RTYFGVB" << "&YUJNM"<< "*IK<(" << ")OL>" << "_+P{}|:\"?" << "";
     namesOfFingers << "left little finger" << "left ring finger" << "left middle finger" << "left index" <<
                       "right index" << "right middle finger" << "right ring finger" << "right little finger" << "thumb";
@@ -168,8 +172,13 @@ void Editor::keyPressEvent(QKeyEvent *event)
         break;
     }
     }
+<<<<<<< HEAD
     emit progressChanged(static_cast<int>(static_cast<float>(cursorPosition + 1) / sizeOfText * 100));
     emit mistakesChanged(static_cast<int>(mistakes));
+=======
+    emit progressChanged(float(cursorPosition + 1)/float(sizeOfText)*100);
+    emit mistakesChanged(mistakes);
+>>>>>>> 2b2702bb354cd6160fd74fe4c3cc689edf5a7168
     updateFinger();
     isTestEnded();
     this->setTextCursor(cursor);
@@ -178,7 +187,11 @@ void Editor::keyPressEvent(QKeyEvent *event)
 
 void Editor::updateFinger()
 {
+<<<<<<< HEAD
     for(int i = 0; i < namesOfFingers.size(); ++i)
+=======
+    for(int i = 0; i < namesOfFingers.size(); i++)
+>>>>>>> 2b2702bb354cd6160fd74fe4c3cc689edf5a7168
     {
         if(cursorPosition < sizeOfText)
         {
