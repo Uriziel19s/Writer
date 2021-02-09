@@ -46,10 +46,10 @@ private:
     void showScoreTable();
     void setBackgroundsColor(QColor color);
     void setTextSize(unsigned int size);
-    std::unique_ptr<Ui::MainWindow> ui;
+    Ui::MainWindow *ui;
     std::unique_ptr<ScoreDisplayer> scoreDisplayer;
     std::unique_ptr<Editor> testDisplayer;
-    std::unique_ptr<QStackedWidget> stackedWidget;
+    QStackedWidget *stackedWidget;
     QString fileName;
     QString textToDisplay;
     const unsigned int kMaxFileSize = 1024 * 1024;

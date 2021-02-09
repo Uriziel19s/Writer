@@ -12,7 +12,7 @@ class Editor : public QTextEdit
 
 public:
     Editor(QWidget *parent = nullptr);
-    ~Editor();
+    ~Editor() = default;
     void setText(QString text);
     void reset();
     void updateFinger();

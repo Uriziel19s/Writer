@@ -11,10 +11,7 @@ Editor::Editor(QWidget *parent) : QTextEdit(parent)
                       "right index" << "right middle finger" << "right ring finger" << "right little finger" << "thumb";
 };
 
-Editor::~Editor()
-{
 
-}
 
 void Editor::setText(QString textToDisplay)
 {
@@ -52,7 +49,7 @@ void Editor::isTestEnded()
         int relativeMistakes = 0;
         for(bool i : mistakesLog)
         {
-            if(i == true)
+            if(i)
             {
                 relativeMistakes++;
             }

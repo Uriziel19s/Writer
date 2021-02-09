@@ -7,11 +7,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     testDisplayer = std::make_unique<Editor>(this);
     scoreDisplayer = std::make_unique<ScoreDisplayer>(this);
-    stackedWidget = std::make_unique<QStackedWidget>(this);
+    stackedWidget = new QStackedWidget(this);
     stackedWidget->addWidget(testDisplayer.get());
     stackedWidget->addWidget(scoreDisplayer.get());
     ui->setupUi(this);
-    setCentralWidget(stackedWidget.get());
+    setCentralWidget(stackedWidget);
     ui->statusbar->addWidget(ui->fingerDisplayer);
     ui->statusbar->addPermanentWidget(ui->progressBar);
     ui->statusbar->addPermanentWidget(ui->lcdMistakesCounter);
@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+
 }
 
 void MainWindow::openFile()
