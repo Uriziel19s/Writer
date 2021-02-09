@@ -5,11 +5,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    testDisplayer = std::make_unique<Editor>(this);
-    scoreDisplayer = std::make_unique<ScoreDisplayer>(this);
+    testDisplayer = new Editor(this);
+    scoreDisplayer = new ScoreDisplayer(this);
     stackedWidget = new QStackedWidget(this);
-    stackedWidget->addWidget(testDisplayer.get());
-    stackedWidget->addWidget(scoreDisplayer.get());
+    stackedWidget->addWidget(testDisplayer);
+    stackedWidget->addWidget(scoreDisplayer);
     ui->setupUi(this);
     setCentralWidget(stackedWidget);
     ui->statusbar->addWidget(ui->fingerDisplayer);
@@ -22,13 +22,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->fingerDisplayer->setMinimumSize(250,20);
     setBackgroundsColor("#ccffff");
     setTextSize(20);
-    connect(testDisplayer.get(), &Editor::mistakesChanged, ui->lcdMistakesCounter, static_cast<void (QLCDNumber::*)(int)>(&QLCDNumber::display));
-    connect(testDisplayer.get(), &Editor::progressChanged, ui->progressBar, &QProgressBar::setValue);
-    connect(testDisplayer.get(), &Editor::testEnded, this, &MainWindow::showScore);
-    connect(testDisplayer.get(), &Editor::resetTest, this, &MainWindow::startTest);
-    connect(scoreDisplayer.get(), &ScoreDisplayer::resetTest, this, &MainWindow::startTest);
-    connect(scoreDisplayer.get(), &ScoreDisplayer::showScoreTable, this, &MainWindow::showScoreTable);
-    connect(testDisplayer.get(), &Editor::fingerChanged, ui->fingerDisplayer,&QLabel::setText);
+    connect(testDisplayer, &Editor::mistakesChanged, ui->lcdMistakesCounter, static_cast<void (QLCDNumber::*)(int)>(&QLCDNumber::display));
+    connect(testDisplayer, &Editor::progressChanged, ui->progressBar, &QProgressBar::setValue);
+    connect(testDisplayer, &Editor::testEnded, this, &MainWindow::showScore);
+    connect(testDisplayer, &Editor::resetTest, this, &MainWindow::startTest);
+    connect(scoreDisplayer, &ScoreDisplayer::resetTest, this, &MainWindow::startTest);
+    connect(scoreDisplayer, &ScoreDisplayer::showScoreTable, this, &MainWindow::showScoreTable);
+    connect(testDisplayer, &Editor::fingerChanged, ui->fingerDisplayer,&QLabel::setText);
     showStartMenu();
 }
 

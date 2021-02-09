@@ -47,8 +47,8 @@ private:
     void setBackgroundsColor(QColor color);
     void setTextSize(unsigned int size);
     Ui::MainWindow *ui;
-    std::unique_ptr<ScoreDisplayer> scoreDisplayer;
-    std::unique_ptr<Editor> testDisplayer;
+    ScoreDisplayer *scoreDisplayer;
+    Editor *testDisplayer;
     QStackedWidget *stackedWidget;
     QString fileName;
     QString textToDisplay;
